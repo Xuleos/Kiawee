@@ -75,7 +75,7 @@ export class Slot {
 		this.confirmedTile = tile;
 
 		//I don't want to mutate the original tiles
-		const excessTiles = this.tiles.filter(item => {
+		const excessTiles = this.tiles.filter((item) => {
 			return item !== this.confirmedTile;
 		});
 
@@ -103,7 +103,7 @@ export class Slot {
 			const inverseDirName = this.propagator.model.GetInverseDirection(dir);
 
 			// eslint-disable-next-line roblox-ts/no-object-math
-			const neighbor = this.propagator.slots.find(slot => slot.pos === neighborCoord);
+			const neighbor = this.propagator.slots.find((slot) => slot.pos === neighborCoord);
 
 			if (neighbor) {
 				for (const tile of tiles) {
@@ -166,7 +166,7 @@ export class Slot {
 			}
 		}
 
-		const firstTile = this.tiles.find(x => x !== undefined);
+		const firstTile = this.tiles.find((x) => x !== undefined);
 
 		if (firstTile) {
 			this.Collapse(firstTile);
