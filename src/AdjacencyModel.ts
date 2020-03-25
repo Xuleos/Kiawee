@@ -1,4 +1,4 @@
-import ITile from "./interfaces/ITile";
+import ITile from "./Interfaces/ITile";
 import { Tile } from "./Tile";
 import { BaseTopology } from "./Topology";
 

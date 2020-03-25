@@ -4,7 +4,7 @@ import { Slot } from "./Slot";
 import { Tile } from "./Tile";
 
 import PropagatorOptions from "./Interfaces/PropagatorOptions";
-import { Status } from "./interfaces/StatusEnum";
+import { Status } from "./Interfaces/StatusEnum";
 export class Propagator<T extends BaseTopology> {
 	slots: Array<Slot> = [];
 
