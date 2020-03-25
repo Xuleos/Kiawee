@@ -59,7 +59,7 @@ export class GridTopology extends BaseTopology {
 			const neighborCoords = slotPos.add(vector.mul(this.slotSize));
 
 			// eslint-disable-next-line roblox-ts/no-object-math
-			const neighbor = this.slots.find(slotCoords => slotCoords === neighborCoords);
+			const neighbor = this.slots.find((slotCoords) => slotCoords === neighborCoords);
 
 			if (neighbor) {
 				neighbors[dirName] = neighbor;
