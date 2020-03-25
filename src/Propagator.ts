@@ -4,7 +4,7 @@ import { Slot } from "./Slot";
 import { Tile } from "./Tile";
 
 import PropagatorOptions from "./Interfaces/PropagatorOptions";
-
+import {Status} from "./interfaces/StatusEnum"
 export class Propagator<T extends BaseTopology> {
 	slots: Array<Slot> = [];
 
@@ -12,6 +12,8 @@ export class Propagator<T extends BaseTopology> {
 		tile: Tile;
 		slot: Slot;
 	}> = [];
+
+	status: Status
 
 	readonly random: Random;
 
@@ -33,6 +35,8 @@ export class Propagator<T extends BaseTopology> {
 		} else {
 			this.random = new Random();
 		}
+
+		this.status = Status.Solving
 	}
 
 	GetAvailableTilesLeft(): number {
@@ -72,6 +76,8 @@ export class Propagator<T extends BaseTopology> {
 		if (this.options.Debug) {
 			print("We finished!");
 		}
+
+		this.status = Status.Completed;
 	}
 
 	FinishRemovalQueue() {
@@ -84,7 +90,10 @@ export class Propagator<T extends BaseTopology> {
 		}
 	}
 
-	//need to test
+	SetContradiction() {
+		this.status = Status.Contradiction
+	}
+
 	private FindLowestEntropy(): Slot {
 		const sorted = this.slots.sort((a, b) => {
 			return a.entropy < b.entropy;
