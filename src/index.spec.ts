@@ -168,7 +168,6 @@ export = () => {
 			},
 		]);
 
-		//Proper results would either be 100% green or 100% red
 
 		print("Adjacency model created");
 
