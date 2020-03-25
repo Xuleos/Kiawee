@@ -74,6 +74,11 @@ export class Slot {
 	Collapse(tile: Tile) {
 		this.confirmedTile = tile;
 
+		this.propagator.history[this.propagator.step] = {
+			RemovedTiles: new Map<Vector3, Array<Tile>>(),
+			Slot: this,
+		};
+
 		//I don't want to mutate the original tiles
 		const excessTiles = this.tiles.filter((item) => {
 			return item !== this.confirmedTile;

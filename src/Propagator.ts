@@ -14,7 +14,7 @@ export class Propagator<T extends BaseTopology> {
 	}> = [];
 
 	history: Array<{
-		RemovedTiles: Array<Tile>;
+		RemovedTiles: Map<Vector3, Array<Tile>>;
 		Slot: Slot;
 	}> = [];
 
