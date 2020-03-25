@@ -128,6 +128,11 @@ export class Slot {
 			this.tiles.remove(tileIndex);
 		}
 
+		if (this.tiles.size() <= 0) {
+			this.propagator.SetContradiction()
+			return
+		}
+
 		if (recursive) {
 			this.propagator.FinishRemovalQueue();
 		}
@@ -135,6 +140,15 @@ export class Slot {
 
 	//Test
 	CollapseRandom() {
+		if (this.tiles.size() <= 0) {
+			this.propagator.SetContradiction()
+			return
+		}
+
+		if (this.confirmedTile) {
+			error("This slot is already collapsed")
+		}
+
 		let totalWeight = 0;
 
 		for (const tile of this.tiles) {
