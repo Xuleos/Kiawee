@@ -13,7 +13,14 @@ export class Propagator<T extends BaseTopology> {
 		slot: Slot;
 	}> = [];
 
-	status: Status
+	history: Array<{
+		RemovedTiles: Array<Tile>;
+		Slot: Slot;
+	}> = [];
+
+	status: Status;
+
+	step = 0;
 
 	readonly random: Random;
 
@@ -55,6 +62,8 @@ export class Propagator<T extends BaseTopology> {
 		//this could be a bad idea in the future and result in infinite yielding
 		while (availableTilesLeft > 0) {
 			wait();
+
+			this.step++;
 
 			for (const slot of this.slots) {
 				slot.entropy = slot.CalculateEntropy();
