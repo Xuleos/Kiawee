@@ -4,7 +4,7 @@ import { Slot } from "./Slot";
 import { Tile } from "./Tile";
 
 import PropagatorOptions from "./Interfaces/PropagatorOptions";
-import {Status} from "./interfaces/StatusEnum"
+import { Status } from "./interfaces/StatusEnum";
 export class Propagator<T extends BaseTopology> {
 	slots: Array<Slot> = [];
 
@@ -36,11 +36,11 @@ export class Propagator<T extends BaseTopology> {
 			this.random = new Random();
 		}
 
-		this.status = Status.Solving
+		this.status = Status.Solving;
 	}
 
 	GetAvailableTilesLeft(): number {
-		const collapseFiltered = this.slots.filter(slot => {
+		const collapseFiltered = this.slots.filter((slot) => {
 			return !slot.confirmedTile;
 		});
 
@@ -99,7 +99,7 @@ export class Propagator<T extends BaseTopology> {
 			return a.entropy < b.entropy;
 		});
 
-		return sorted.filter(slot => {
+		return sorted.filter((slot) => {
 			return slot.confirmedTile === undefined;
 		})[0];
 	}

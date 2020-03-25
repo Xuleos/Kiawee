@@ -75,7 +75,7 @@ export class Slot {
 		this.confirmedTile = tile;
 
 		//I don't want to mutate the original tiles
-		const excessTiles = this.tiles.filter(item => {
+		const excessTiles = this.tiles.filter((item) => {
 			return item !== this.confirmedTile;
 		});
 
@@ -90,7 +90,7 @@ export class Slot {
 	}
 
 	ContainsTile(tileIndex: string) {
-		return this.tiles.find(tile => {
+		return this.tiles.find((tile) => {
 			return tile.index === tileIndex;
 		});
 	}
@@ -103,7 +103,7 @@ export class Slot {
 			const inverseDirName = this.propagator.model.GetInverseDirection(dir);
 
 			// eslint-disable-next-line roblox-ts/no-object-math
-			const neighbor = this.propagator.slots.find(slot => slot.pos === neighborCoord);
+			const neighbor = this.propagator.slots.find((slot) => slot.pos === neighborCoord);
 
 			if (neighbor) {
 				for (const tile of tiles) {
@@ -129,8 +129,8 @@ export class Slot {
 		}
 
 		if (this.tiles.size() <= 0) {
-			this.propagator.SetContradiction()
-			return
+			this.propagator.SetContradiction();
+			return;
 		}
 
 		if (recursive) {
@@ -141,12 +141,12 @@ export class Slot {
 	//Test
 	CollapseRandom() {
 		if (this.tiles.size() <= 0) {
-			this.propagator.SetContradiction()
-			return
+			this.propagator.SetContradiction();
+			return;
 		}
 
 		if (this.confirmedTile) {
-			error("This slot is already collapsed")
+			error("This slot is already collapsed");
 		}
 
 		let totalWeight = 0;
@@ -166,7 +166,7 @@ export class Slot {
 			}
 		}
 
-		const firstTile = this.tiles.find(x => x !== undefined);
+		const firstTile = this.tiles.find((x) => x !== undefined);
 
 		if (firstTile) {
 			this.Collapse(firstTile);
