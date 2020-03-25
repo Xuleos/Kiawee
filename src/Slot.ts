@@ -101,6 +101,15 @@ export class Slot {
 	}
 
 	RemoveTiles(tiles: Array<Tile>, recursive = true) {
+		const stepHistory = this.propagator.history[this.propagator.step];
+
+		const removedTilesHere = stepHistory.RemovedTiles.get(this.pos);
+		if (!removedTilesHere) {
+			stepHistory.RemovedTiles.set(this.pos, tiles.copy());
+		} else {
+			removedTilesHere.push(...tiles);
+		}
+
 		//Might be useful to cache this somewhere later
 		const slotNeighbors = this.propagator.topology.GetNeighbors(this.pos);
 
