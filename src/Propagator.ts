@@ -126,10 +126,15 @@ export class Propagator<T extends BaseTopology> {
 		for (let i = 0; i < amount; i++) {
 			const stamp = this.history[this.step];
 
+			let total = 0;
 			for (const [slot, tiles] of stamp.RemovedTiles) {
+				total++;
 				slot.AddTiles(tiles);
 			}
 
+			if (this.options.Debug) {
+				print(`${total} tiles removed in step ${this.step}`);
+			}
 			stamp.Slot.confirmedTile = undefined;
 
 			const build = this.buildHistory.get(stamp.Slot);
