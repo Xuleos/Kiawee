@@ -152,6 +152,29 @@ export class Slot {
 		}
 	}
 
+	AddTiles(tiles: Array<Tile>) {
+		for (const tile of tiles) {
+			if (!this.ContainsTile(tile.index) && this.confirmedTile !== tile) {
+				const slotNeighbors = this.propagator.topology.GetNeighbors(this.pos);
+
+				for (const [dir, neighborCoord] of Object.entries(slotNeighbors)) {
+					const inverseDirName = this.propagator.model.GetInverseDirection(dir);
+
+					// eslint-disable-next-line roblox-ts/no-object-math
+					const neighbor = this.propagator.slots.find((slot) => slot.pos === neighborCoord);
+
+					if (neighbor) {
+						for (const possibleNeighbor of tile.possibleNeighbors[dir]) {
+							neighbor.tileHealth[inverseDirName][possibleNeighbor]++;
+						}
+					}
+				}
+
+				this.tiles.push(...tiles);
+			}
+		}
+	}
+
 	//Test
 	CollapseRandom() {
 		if (this.tiles.size() <= 0) {
