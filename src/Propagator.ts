@@ -128,6 +128,13 @@ export class Propagator<T extends BaseTopology> {
 
 			stamp.Slot.confirmedTile = undefined;
 
+			const build = this.buildHistory.get(stamp.Slot);
+
+			if (build) {
+				build.Destroy();
+				this.buildHistory.delete(stamp.Slot);
+			}
+
 			this.step--;
 		}
 	}
