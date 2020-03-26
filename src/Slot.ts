@@ -87,11 +87,7 @@ export class Slot {
 		this.RemoveTiles(excessTiles);
 
 		//physically build
-		const clone = this.confirmedTile.model.Clone();
-		clone.SetPrimaryPartCFrame(new CFrame(this.pos));
-		clone.Parent = game.Workspace;
-
-		this.debugInstance.Destroy();
+		this.propagator.BuildSlot(this, tile);
 	}
 
 	ContainsTile(tileIndex: string) {

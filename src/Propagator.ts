@@ -13,6 +13,8 @@ export class Propagator<T extends BaseTopology> {
 		slot: Slot;
 	}> = [];
 
+	buildHistory = new Map<Slot, Model>();
+
 	history: Array<{
 		RemovedTiles: Map<Slot, Array<Tile>>;
 		Slot: Slot;
@@ -100,6 +102,16 @@ export class Propagator<T extends BaseTopology> {
 				entry.slot.RemoveTiles([entry.tile], false);
 			}
 		}
+	}
+
+	BuildSlot(slot: Slot, tile: Tile) {
+		this.buildHistory.set(slot, tile.model);
+
+		const clone = tile.model.Clone();
+		clone.SetPrimaryPartCFrame(new CFrame(slot.pos));
+		clone.Parent = game.Workspace;
+
+		slot.debugInstance.Destroy();
 	}
 
 	SetContradiction() {
