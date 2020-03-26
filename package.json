@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/kiawee",
-  "version": "1.0.13",
+  "version": "1.1.0",
   "description": "",
   "main": "out/init.lua",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Xuleos/Kiawe/issues"
   },
