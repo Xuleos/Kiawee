@@ -75,7 +75,7 @@ export class Slot {
 		this.confirmedTile = tile;
 
 		this.propagator.history[this.propagator.step] = {
-			RemovedTiles: new Map<Vector3, Array<Tile>>(),
+			RemovedTiles: new Map<Slot, Array<Tile>>(),
 			Slot: this,
 		};
 
@@ -103,9 +103,9 @@ export class Slot {
 	RemoveTiles(tiles: Array<Tile>, recursive = true) {
 		const stepHistory = this.propagator.history[this.propagator.step];
 
-		const removedTilesHere = stepHistory.RemovedTiles.get(this.pos);
+		const removedTilesHere = stepHistory.RemovedTiles.get(this);
 		if (!removedTilesHere) {
-			stepHistory.RemovedTiles.set(this.pos, tiles.copy());
+			stepHistory.RemovedTiles.set(this, tiles.copy());
 		} else {
 			removedTilesHere.push(...tiles);
 		}
