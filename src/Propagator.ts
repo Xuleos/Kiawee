@@ -83,6 +83,10 @@ export class Propagator<T extends BaseTopology> {
 				}
 			}
 			if (this.status === Status.Contradiction) {
+				if (this.options.Debug) {
+					warn("Encountered Contradiction");
+				}
+
 				this.Undo(this.options.BacktrackDepth !== undefined ? this.options.BacktrackDepth : 4);
 			}
 		}
@@ -105,11 +109,11 @@ export class Propagator<T extends BaseTopology> {
 	}
 
 	BuildSlot(slot: Slot, tile: Tile) {
-		this.buildHistory.set(slot, tile.model);
-
 		const clone = tile.model.Clone();
 		clone.SetPrimaryPartCFrame(new CFrame(slot.pos));
 		clone.Parent = game.Workspace;
+
+		this.buildHistory.set(slot, clone);
 
 		slot.debugInstance.Destroy();
 	}
