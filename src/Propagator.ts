@@ -8,7 +8,7 @@ import { Status } from "./Interfaces/StatusEnum";
 export class Propagator<T extends BaseTopology> {
 	slots: Array<Slot> = [];
 
-	RemovalQueue: Array<{
+	removalQueue: Array<{
 		tile: Tile;
 		slot: Slot;
 	}> = [];
@@ -93,8 +93,8 @@ export class Propagator<T extends BaseTopology> {
 	}
 
 	FinishRemovalQueue() {
-		while (this.RemovalQueue.size() > 0) {
-			const entry = this.RemovalQueue.pop();
+		while (this.removalQueue.size() > 0) {
+			const entry = this.removalQueue.pop();
 
 			if (entry && !entry.slot.confirmedTile) {
 				entry.slot.RemoveTiles([entry.tile], false);

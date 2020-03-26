@@ -124,7 +124,7 @@ export class Slot {
 					for (const possibleNeighbor of tile.possibleNeighbors[dir]) {
 						const possibleNeighborTile = neighbor.ContainsTile(possibleNeighbor);
 						if (neighbor.tileHealth[inverseDirName][possibleNeighbor] === 1 && possibleNeighborTile) {
-							this.propagator.RemovalQueue.push({
+							this.propagator.removalQueue.push({
 								tile: possibleNeighborTile,
 								slot: neighbor,
 							});
