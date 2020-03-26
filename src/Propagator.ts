@@ -107,7 +107,17 @@ export class Propagator<T extends BaseTopology> {
 	}
 
 	Undo(amount: number) {
-		const stepsRemaining = amount;
+		for (let i = 0; i < amount; i++) {
+			const stamp = this.history[this.step];
+
+			for (const [slot, tiles] of stamp.RemovedTiles) {
+				slot.AddTiles(tiles);
+			}
+
+			stamp.Slot.confirmedTile = undefined;
+
+			this.step--;
+		}
 	}
 
 	private FindLowestEntropy(): Slot {
