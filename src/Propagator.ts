@@ -80,6 +80,9 @@ export class Propagator<T extends BaseTopology> {
 					slot.entropyDisplay.Text = tostring(slot.entropy);
 				}
 			}
+			if (this.status === Status.Contradiction) {
+				this.Undo(this.options.BacktrackDepth !== undefined ? this.options.BacktrackDepth : 4);
+			}
 		}
 
 		if (this.options.Debug) {
@@ -100,7 +103,11 @@ export class Propagator<T extends BaseTopology> {
 	}
 
 	SetContradiction() {
-		this.status = Status.Contradiction
+		this.status = Status.Contradiction;
+	}
+
+	Undo(amount: number) {
+		const stepsRemaining = amount;
 	}
 
 	private FindLowestEntropy(): Slot {
