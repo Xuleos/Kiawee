@@ -74,8 +74,6 @@ export class Propagator<T extends BaseTopology> {
 			const lowestEntropy = this.FindLowestEntropy();
 			lowestEntropy.CollapseRandom();
 
-			availableTilesLeft = this.GetAvailableTilesLeft();
-
 			if (this.options.Debug) {
 				for (const slot of this.slots) {
 					slot.tilesDisplay.Text = tostring(slot.tiles.size());
@@ -87,8 +85,12 @@ export class Propagator<T extends BaseTopology> {
 					warn("Encountered Contradiction");
 				}
 
+				this.removalQueue = [];
+
 				this.Undo(this.options.BacktrackDepth !== undefined ? this.options.BacktrackDepth : 4);
 			}
+
+			availableTilesLeft = this.GetAvailableTilesLeft();
 		}
 
 		if (this.options.Debug) {
@@ -126,25 +128,27 @@ export class Propagator<T extends BaseTopology> {
 		for (let i = 0; i < amount; i++) {
 			const stamp = this.history[this.step];
 
-			let total = 0;
-			for (const [slot, tiles] of stamp.RemovedTiles) {
-				total++;
-				slot.AddTiles(tiles);
+			if (stamp) {
+				let total = 0;
+				for (const [slot, tiles] of stamp.RemovedTiles) {
+					total++;
+					slot.AddTiles(tiles);
+				}
+
+				if (this.options.Debug) {
+					print(`${total} tiles removed in step ${this.step}`);
+				}
+				stamp.Slot.confirmedTile = undefined;
+
+				const build = this.buildHistory.get(stamp.Slot);
+
+				if (build) {
+					build.Destroy();
+					this.buildHistory.delete(stamp.Slot);
+				}
+
+				this.step--;
 			}
-
-			if (this.options.Debug) {
-				print(`${total} tiles removed in step ${this.step}`);
-			}
-			stamp.Slot.confirmedTile = undefined;
-
-			const build = this.buildHistory.get(stamp.Slot);
-
-			if (build) {
-				build.Destroy();
-				this.buildHistory.delete(stamp.Slot);
-			}
-
-			this.step--;
 		}
 	}
 
