@@ -1,0 +1,8 @@
+# directories
+src/
+
+# files
+.editorconfig
+.eslintrc
+.gitignore
+.gitmodules

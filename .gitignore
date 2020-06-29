@@ -1,0 +1,5 @@
+node_modules/
+include/
+out/
+*.rbxlx
+*.rbxlx.lock
