@@ -6,3 +6,7 @@ src/
 .eslintrc
 .gitignore
 .gitmodules
+.eslintrc
+.editorconfig
+foreman.toml
+default.project.json
