@@ -11,6 +11,6 @@ export = () => {
 		adjacency,
 	);
 	it("correctly generates initial tile enablers", () => {
-		gen["createInitialTileEnablers"]();
+		gen["createInitialTileEnablers"]([]);
 	});
 };

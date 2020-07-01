@@ -1,7 +1,7 @@
 import { RunService } from "@rbxts/services";
 import Slot from "./Slot";
-import { AdjacencyModel } from "./AdjacencyModels";
-import { DirectionNames, directionVectors, getInverseDir } from "./Directions";
+import { AdjacencyModel, InternalTile } from "./AdjacencyModels";
+import { DirectionNames, directionVectors, getInverseDir, DirectionNameUnion } from "./Directions";
 
 interface IGridOptions {
 	gridSize: Vector3;
@@ -13,8 +13,8 @@ interface IGeneratorOptions {
 }
 
 type TileEnablers = {
-	[dirtype in typeof DirectionNames[number]]?: {
-		[index: string]: number;
+	[dirtype in DirectionNameUnion]: {
+		[index: number]: number;
 	};
 };
 
@@ -29,14 +29,17 @@ export default class Generator<T> {
 
 	private updateRate: number;
 
+	private adjacencyModel: AdjacencyModel<T>;
+
 	public constructor(gridOptions: IGridOptions, adjacencyModel: AdjacencyModel<T>, options?: IGeneratorOptions) {
+		this.gridOptions = gridOptions;
+		this.slots = [];
+		this.adjacencyModel = adjacencyModel;
+
 		const gridSize = gridOptions.gridSize;
 		const slotSize = gridOptions.slotSize;
 
-		this.gridOptions = gridOptions;
-		this.slots = [];
-
-		const initialTileEnablers = this.createInitialTileEnablers();
+		const initialTileEnablers = this.createInitialTileEnablers(adjacencyModel.tiles);
 
 		for (let x = 0; x < gridSize.X; x++) {
 			for (let y = 0; y < gridSize.Y; y++) {
@@ -69,15 +72,28 @@ export default class Generator<T> {
 
 	private update() {}
 
-	private createInitialTileEnablers(): TileEnablers {
+	private createInitialTileEnablers<T>(tiles: Array<InternalTile<T>>): TileEnablers {
 		const initialEnablers: TileEnablers = {};
 
 		for (let i = 0; i < 6; i++) {
+			const dirName = DirectionNames[i];
+			initialEnablers[dirName] = {};
+
+			const enablersForDir = initialEnablers[dirName];
+
 			const inverseDir = getInverseDir(i);
 
-			initialEnablers[inverseDir] = {};
+			for (const index of Object.keys(tiles)) {
+				const possibleNeighbors = this.adjacencyModel.getPossibleNeighbors(index);
 
-			
+				for (const possibleNeighborIndex of possibleNeighbors[inverseDir]) {
+					if (enablersForDir[possibleNeighborIndex] === undefined) {
+						enablersForDir[possibleNeighborIndex] = 0;
+					}
+
+					enablersForDir[possibleNeighborIndex]++;
+				}
+			}
 		}
 
 		return initialEnablers;
