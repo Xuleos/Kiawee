@@ -1,19 +1,16 @@
 //Plan to support both face and corner connections by default hopefully
 
 import { DirectionNames, DirectionNameUnion, getInverseDir } from "./Directions";
+import { possibleNeighborsType, InternalTile } from "./types/Internal";
+import * as Options from "./types/Options";
 
-interface Tile<Rules> {
-	probability: number;
-	model: Model;
-	rules: Rules;
-}
-
-export interface InternalTile<T> extends Tile<T> {
-	pLogP: number;
-}
-
-type possibleNeighborsType = {
-	[dir in DirectionNameUnion]: Array<number>;
+const STARTING_POSSIBLE_NEIGHBORS = {
+	Left: [],
+	Right: [],
+	Front: [],
+	Back: [],
+	Top: [],
+	Bottom: [],
 };
 
 export abstract class AdjacencyModel<T> {
@@ -21,7 +18,7 @@ export abstract class AdjacencyModel<T> {
 
 	public cachedPossibleNeighbors: Array<possibleNeighborsType>;
 
-	public constructor(tileSet: Array<Tile<T>>) {
+	public constructor(tileSet: Array<Options.Tile<T>>) {
 		this.tiles = [];
 		this.cachedPossibleNeighbors = [];
 		for (const tile of tileSet) {
@@ -42,7 +39,7 @@ type FaceConnectionRules = {
 };
 
 export class FaceConnectionModel extends AdjacencyModel<FaceConnectionRules> {
-	public constructor(tileSet: Array<Tile<FaceConnectionRules>>) {
+	public constructor(tileSet: Array<Options.Tile<FaceConnectionRules>>) {
 		super(tileSet);
 	}
 
@@ -52,13 +49,10 @@ export class FaceConnectionModel extends AdjacencyModel<FaceConnectionRules> {
 		} else {
 			const thisTile = this.tiles[tileIndex];
 
-			const possibleNeighbors: possibleNeighborsType = {};
+			const possibleNeighbors: possibleNeighborsType = Object.deepCopy(STARTING_POSSIBLE_NEIGHBORS);
 
 			for (let i = 0; i < 6; i++) {
 				const dirName = DirectionNames[i];
-
-				possibleNeighbors[dirName] = [];
-
 				const inverseDir = getInverseDir(i);
 
 				for (const [index, tile] of Object.entries(this.tiles)) {

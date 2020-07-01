@@ -9,7 +9,7 @@
 		"strict": true,
 		"moduleResolution": "Node",
 		"target": "es6",
-		"typeRoots": [ "node_modules/@rbxts", "bin" ],
+		"typeRoots": [ "node_modules/@rbxts" ],
 
 		// required, configurable
 		"rootDir": "src",

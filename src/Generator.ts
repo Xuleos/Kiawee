@@ -1,29 +1,25 @@
 import { RunService } from "@rbxts/services";
 import Slot from "./Slot";
-import { AdjacencyModel, InternalTile } from "./AdjacencyModels";
+import { AdjacencyModel } from "./AdjacencyModels";
 import { DirectionNames, directionVectors, getInverseDir, DirectionNameUnion } from "./Directions";
-
-interface IGridOptions {
-	gridSize: Vector3;
-	slotSize: Vector3;
-}
-
-interface IGeneratorOptions {
-	updateRate: number;
-}
-
-type TileEnablers = {
-	[dirtype in DirectionNameUnion]: {
-		[index: number]: number;
-	};
-};
+import * as Options from "./types/options";
+import { InternalTile, TileEnablers } from "./types/Internal";
 
 const DEFAULT_UPDATE_RATE = 1;
 
-export default class Generator<T> {
+const STARTING_TILE_ENABLERS: TileEnablers = {
+	Left: [],
+	Right: [],
+	Front: [],
+	Back: [],
+	Top: [],
+	Bottom: [],
+};
+
+export class Generator<T> {
 	private slots: Array<Slot>;
 	private orderedSlots: Array<Slot>;
-	private gridOptions: IGridOptions;
+	private gridOptions: Options.GridOptions;
 
 	private heartbeatConnection: RBXScriptConnection;
 
@@ -31,7 +27,11 @@ export default class Generator<T> {
 
 	private adjacencyModel: AdjacencyModel<T>;
 
-	public constructor(gridOptions: IGridOptions, adjacencyModel: AdjacencyModel<T>, options?: IGeneratorOptions) {
+	public constructor(
+		gridOptions: Options.GridOptions,
+		adjacencyModel: AdjacencyModel<T>,
+		options?: Options.GeneratorOptions,
+	) {
 		this.gridOptions = gridOptions;
 		this.slots = [];
 		this.adjacencyModel = adjacencyModel;
@@ -44,14 +44,13 @@ export default class Generator<T> {
 		for (let x = 0; x < gridSize.X; x++) {
 			for (let y = 0; y < gridSize.Y; y++) {
 				for (let z = 0; z < gridSize.Z; z++) {
-					this.slots.push(new Slot(new Vector3(x * slotSize.X, y * slotSize.Y, z * slotSize.Z)));
+					const slotPos = new Vector3(x * slotSize.X, y * slotSize.Y, z * slotSize.Z);
+					this.slots.push(new Slot(slotPos, initialTileEnablers));
 				}
 			}
 		}
 
 		this.orderedSlots = this.slots.copy();
-
-		//TODO: Initialize slots with classes. We actually probably should avoid classes ngl. Just have solid data
 
 		//Update loop
 		this.updateRate = options !== undefined ? options.updateRate : DEFAULT_UPDATE_RATE;
@@ -73,17 +72,15 @@ export default class Generator<T> {
 	private update() {}
 
 	private createInitialTileEnablers<T>(tiles: Array<InternalTile<T>>): TileEnablers {
-		const initialEnablers: TileEnablers = {};
+		const initialEnablers = Object.deepCopy(STARTING_TILE_ENABLERS);
 
 		for (let i = 0; i < 6; i++) {
 			const dirName = DirectionNames[i];
-			initialEnablers[dirName] = {};
-
 			const enablersForDir = initialEnablers[dirName];
 
 			const inverseDir = getInverseDir(i);
 
-			for (const index of Object.keys(tiles)) {
+			for (let index = 0; index < tiles.size(); index++) {
 				const possibleNeighbors = this.adjacencyModel.getPossibleNeighbors(index);
 
 				for (const possibleNeighborIndex of possibleNeighbors[inverseDir]) {

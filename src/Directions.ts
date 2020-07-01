@@ -1,5 +1,6 @@
-export const DirectionNames = ["Left", "Right", "Front", "Back", "Top", "Bottom"];
-export type DirectionNameUnion = typeof DirectionNames[number];
+export type DirectionNameUnion = "Left" | "Right" | "Front" | "Back" | "Top" | "Bottom";
+
+export const DirectionNames: Array<DirectionNameUnion> = ["Left", "Right", "Front", "Back", "Top", "Bottom"];
 
 export const directionVectors = [
 	new Vector3(-1, 0, 0),
@@ -24,5 +25,6 @@ export function getInverseDir(dirIndex: number): DirectionNameUnion {
 		return value === inverseDir;
 	});
 
-	return DirectionNames[inverseDirIndex];
+	// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+	return DirectionNames[inverseDirIndex] as DirectionNameUnion;
 }
