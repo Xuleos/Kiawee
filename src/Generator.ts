@@ -17,8 +17,8 @@ const STARTING_TILE_ENABLERS: TileEnablers = {
 };
 
 export class Generator<T> {
-	private slots: Array<Slot>;
-	private orderedSlots: Array<Slot>;
+	private slots: Array<Slot<T>>;
+	private orderedSlots: Array<Slot<T>>;
 	private gridOptions: Options.GridOptions;
 
 	private heartbeatConnection: RBXScriptConnection;
@@ -45,7 +45,8 @@ export class Generator<T> {
 			for (let y = 0; y < gridSize.Y; y++) {
 				for (let z = 0; z < gridSize.Z; z++) {
 					const slotPos = new Vector3(x * slotSize.X, y * slotSize.Y, z * slotSize.Z);
-					this.slots.push(new Slot(slotPos, initialTileEnablers));
+
+					this.slots.push(new Slot(slotPos, adjacencyModel.tiles, initialTileEnablers));
 				}
 			}
 		}

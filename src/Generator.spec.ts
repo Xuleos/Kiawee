@@ -45,8 +45,6 @@ export = () => {
 		const tileEnablers = gen["createInitialTileEnablers"](adjacency.tiles);
 		expect(tileEnablers).to.be.a("table");
 
-		print(tileEnablers);
-
 		for (const [dir, enablers] of Object.entries(tileEnablers)) {
 			expect(dir).to.be.a("string");
 
