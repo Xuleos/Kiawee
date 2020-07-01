@@ -1,6 +1,6 @@
 //Plan to support both face and corner connections by default hopefully
 
-import Directions from "./Directions";
+import { DirectionNames } from "./Directions";
 
 interface Tile<Rules> {
 	probability: number;
@@ -11,6 +11,7 @@ interface Tile<Rules> {
 interface InternalTile<T> extends Tile<T> {
 	pLogP: number;
 }
+
 export abstract class AdjacencyModel<T> {
 	public tiles: Array<InternalTile<T>>;
 
@@ -28,7 +29,7 @@ export abstract class AdjacencyModel<T> {
 }
 
 type FaceConnectionRules = {
-	[dir in Directions]: string;
+	[dir in typeof DirectionNames[number]]: string;
 };
 
 export class FaceConnectionModel extends AdjacencyModel<FaceConnectionRules> {

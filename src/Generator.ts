@@ -1,6 +1,7 @@
 import { RunService } from "@rbxts/services";
 import Slot from "./Slot";
 import { AdjacencyModel } from "./AdjacencyModels";
+import { DirectionNames, directionVectors, getInverseDir } from "./Directions";
 
 interface IGridOptions {
 	gridSize: Vector3;
@@ -11,10 +12,17 @@ interface IGeneratorOptions {
 	updateRate: number;
 }
 
+type TileEnablers = {
+	[dirtype in typeof DirectionNames[number]]?: {
+		[index: string]: number;
+	};
+};
+
 const DEFAULT_UPDATE_RATE = 1;
 
 export default class Generator<T> {
 	private slots: Array<Slot>;
+	private orderedSlots: Array<Slot>;
 	private gridOptions: IGridOptions;
 
 	private heartbeatConnection: RBXScriptConnection;
@@ -28,6 +36,8 @@ export default class Generator<T> {
 		this.gridOptions = gridOptions;
 		this.slots = [];
 
+		const initialTileEnablers = this.createInitialTileEnablers();
+
 		for (let x = 0; x < gridSize.X; x++) {
 			for (let y = 0; y < gridSize.Y; y++) {
 				for (let z = 0; z < gridSize.Z; z++) {
@@ -35,6 +45,8 @@ export default class Generator<T> {
 				}
 			}
 		}
+
+		this.orderedSlots = this.slots.copy();
 
 		//TODO: Initialize slots with classes. We actually probably should avoid classes ngl. Just have solid data
 
@@ -48,10 +60,26 @@ export default class Generator<T> {
 			if (totalStep >= this.updateRate) {
 				totalStep = 0;
 
-				this.update();
+				if (!this.orderedSlots.isEmpty()) {
+					this.update();
+				}
 			}
 		});
 	}
 
 	private update() {}
+
+	private createInitialTileEnablers(): TileEnablers {
+		const initialEnablers: TileEnablers = {};
+
+		for (let i = 0; i < 6; i++) {
+			const inverseDir = getInverseDir(i);
+
+			initialEnablers[inverseDir] = {};
+
+			
+		}
+
+		return initialEnablers;
+	}
 }

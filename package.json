@@ -4,7 +4,7 @@
   "description": "",
   "main": "out/init.lua",
   "scripts": {
-    "prepublishOnly": "rbxtsc"
+    "prepublishOnly": "rbxtsc --rojo undefined"
   },
   "repository": {
     "type": "git",
