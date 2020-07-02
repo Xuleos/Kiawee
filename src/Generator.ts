@@ -5,7 +5,7 @@ import { DirectionNames, directionVectors, getInverseDir, DirectionNameUnion } f
 import * as Options from "./types/options";
 import { InternalTile, TileEnablers, possibleNeighborsType, Neighbors } from "./types/Internal";
 
-const DEFAULT_UPDATE_RATE = -1;
+const DEFAULT_UPDATE_RATE = 1;
 
 const STARTING_TILE_ENABLERS: TileEnablers = {
 	Left: [],
@@ -29,12 +29,14 @@ export class Generator<T> {
 	public currentStep = 0;
 	public slots: Array<Slot<T>>;
 	public adjacencyModel: AdjacencyModel<T>;
+	public gridOptions: Options.GridOptions;
 
 	private uncollapsedSlots: Array<Slot<T>>;
-	private gridOptions: Options.GridOptions;
 
 	private heartbeatConnection: RBXScriptConnection;
 	private updateRate: number;
+
+	private debug = false;
 
 	public constructor(
 		gridOptions: Options.GridOptions,
@@ -54,6 +56,10 @@ export class Generator<T> {
 
 		const random = new Random();
 
+		if (options && options.debug) {
+			this.debug = true;
+		}
+
 		for (let x = 0; x < gridSize.X; x++) {
 			for (let y = 0; y < gridSize.Y; y++) {
 				for (let z = 0; z < gridSize.Z; z++) {
@@ -68,6 +74,7 @@ export class Generator<T> {
 							adjacencyModel.tiles.copy(),
 							Object.deepCopy(initialTileEnablers),
 							random,
+							this.debug,
 						),
 					);
 				}
@@ -102,10 +109,13 @@ export class Generator<T> {
 			const neighborPos = pos.add(dirVector.mul(this.gridOptions.slotSize));
 
 			const neighbor = this.slots.find((slot) => {
-				return slot.position === pos;
+				return slot.position === neighborPos;
 			});
 
 			if (neighbor) {
+				if (neighbor.debugParts) {
+					neighbor.debugParts.part.Color = new Color3(1, 0, 0);
+				}
 				neighbors[dirName] = neighbor.index;
 			}
 		}
@@ -117,6 +127,7 @@ export class Generator<T> {
 		this.currentStep++;
 
 		this.sortSlots();
+
 		const lowestEntropy = this.uncollapsedSlots.pop();
 
 		if (lowestEntropy) {
@@ -125,9 +136,20 @@ export class Generator<T> {
 			error("Could not find slot with lowest entropy");
 		}
 
+		if (this.debug) {
+			for (const slot of this.slots) {
+				if (slot.debugParts) {
+					slot.debugParts.tileDisplay.Text = tostring(slot["tiles"].size());
+				}
+			}
+		}
+
 		const first = this.buildQueue.remove(0);
 
 		if (first) {
+			if (first.slot.debugParts) {
+				first.slot.debugParts.part.Destroy();
+			}
 			const model = first.tile.model.Clone();
 			model.SetPrimaryPartCFrame(new CFrame(first.slot.position));
 			model.Parent = Workspace;

@@ -154,6 +154,9 @@ export = () => {
 			slotSize: new Vector3(5, 5, 5),
 		},
 		adjacency,
+		{
+			debug: true,
+		},
 	);
 	it("correctly generates initial tile enablers", () => {
 		const tileEnablers = gen["createInitialTileEnablers"](adjacency.tiles);

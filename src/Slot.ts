@@ -1,6 +1,7 @@
 import * as InternalTypes from "./types/Internal";
 import { Generator } from "./Generator";
 import { DirectionNames, DirectionIndexFromName, getInverseDir } from "./Directions";
+import { Workspace } from "@rbxts/services";
 
 type RemovalEntry<T> = {
 	tile: InternalTypes.InternalTile<T>;
@@ -14,6 +15,11 @@ export default class Slot<T> {
 	public index: number;
 	public position: Vector3;
 	public tileEnablers: InternalTypes.TileEnablers;
+
+	public debugParts?: {
+		part: Part;
+		tileDisplay: TextLabel;
+	};
 
 	private entropy?: number;
 
@@ -30,6 +36,7 @@ export default class Slot<T> {
 		tiles: Array<InternalTypes.InternalTile<T>>,
 		initialTileEnablers: InternalTypes.TileEnablers,
 		random: Random,
+		debugPart?: boolean,
 	) {
 		this.position = pos;
 		this.tiles = tiles;
@@ -37,6 +44,31 @@ export default class Slot<T> {
 		this.index = index;
 		this.generator = generator;
 		this.tileEnablers = initialTileEnablers;
+
+		if (debugPart === true) {
+			const part = new Instance("Part");
+			part.Size = generator.gridOptions.slotSize;
+			part.Position = pos;
+			part.Anchored = true;
+			part.CanCollide = false;
+			part.Transparency = 0.8;
+			part.Parent = Workspace;
+
+			const surfaceGui = new Instance("SurfaceGui");
+			surfaceGui.Face = Enum.NormalId.Top;
+			surfaceGui.Parent = part;
+
+			const textLabel = new Instance("TextLabel");
+			textLabel.TextScaled = true;
+			textLabel.Size = new UDim2(1, 0, 1, 0);
+			textLabel.Text = tostring(tiles.size());
+			textLabel.Parent = surfaceGui;
+
+			this.debugParts = {
+				part: part,
+				tileDisplay: textLabel,
+			};
+		}
 	}
 
 	public getEntroy(): number {
@@ -106,15 +138,17 @@ export default class Slot<T> {
 			return tile !== this.confirmedTile;
 		});
 
-		const removalArray: RemovalArray<T> = [];
+		let removalArray: RemovalArray<T> = [];
 
 		this.removeTiles(excessTiles, removalArray, () => {
 			for (const entry of removalArray) {
-				if (!entry.slot.confirmedTile) {
+				if (entry.slot.confirmedTile === undefined) {
 					entry.slot.removeTiles([entry.tile], removalArray);
 				}
 			}
 		});
+
+		removalArray = [];
 
 		this.generator.buildQueue.push({
 			slot: this,
