@@ -2,6 +2,15 @@ export type DirectionNameUnion = "Left" | "Right" | "Front" | "Back" | "Top" | "
 
 export const DirectionNames: Array<DirectionNameUnion> = ["Left", "Right", "Front", "Back", "Top", "Bottom"];
 
+export const DirectionIndexFromName = {
+	Left: 1,
+	Right: 2,
+	Front: 3,
+	Back: 4,
+	Top: 5,
+	Bottom: 6,
+};
+
 export const directionVectors = [
 	new Vector3(-1, 0, 0),
 	new Vector3(1, 0, 0),

@@ -4,7 +4,7 @@ import { DirectionNames, DirectionNameUnion, getInverseDir } from "./Directions"
 import { possibleNeighborsType, InternalTile } from "./types/Internal";
 import * as Options from "./types/Options";
 
-const STARTING_POSSIBLE_NEIGHBORS = {
+export const STARTING_POSSIBLE_NEIGHBORS = {
 	Left: [],
 	Right: [],
 	Front: [],
@@ -26,6 +26,7 @@ export abstract class AdjacencyModel<T> {
 				probability: tile.probability,
 				model: tile.model,
 				rules: tile.rules,
+				index: this.tiles.size(),
 				pLogP: tile.probability * math.log(tile.probability),
 			});
 		}
