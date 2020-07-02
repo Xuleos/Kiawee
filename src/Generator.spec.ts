@@ -2,10 +2,15 @@ import { Workspace } from "@rbxts/services";
 import { Generator } from "./Generator";
 import { FaceConnectionModel } from "./AdjacencyModels";
 import * as Options from "./types/Options";
+import * as tileTypes from "./types/Tilesets";
 
-function createFakeTileModel(color: Color3): Model {
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+const Tilesets = Workspace.WaitForChild("tilesets") as tileTypes.Tilesets;
+
+function createFakeTileModel(color: Color3, transparency?: number): Model {
 	const part = new Instance("Part");
 	part.Color = color;
+	part.Transparency = transparency !== undefined ? 1 : 0;
 	part.Size = new Vector3(5, 5, 5);
 	part.Anchored = true;
 	part.CanCollide = false;
@@ -23,7 +28,7 @@ export = () => {
 	const tiles = [
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(1, 0, 0)),
+			model: Tilesets.Roads.uno,
 			rules: {
 				Left: "2",
 				Right: "2",
@@ -35,7 +40,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(1, 0, 0)),
+			model: Tilesets.Roads.dos,
 			rules: {
 				Left: "2",
 				Right: "2",
@@ -47,7 +52,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(1, 0, 0)),
+			model: Tilesets.Roads.thres,
 			rules: {
 				Left: "0",
 				Right: "0",
@@ -58,8 +63,8 @@ export = () => {
 			},
 		},
 		{
-			probability: 1,
-			model: createFakeTileModel(new Color3(0, 0, 0)),
+			probability: 20,
+			model: Tilesets.Roads.quatro,
 			rules: {
 				Left: "0",
 				Right: "0",
@@ -71,7 +76,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(1, 0, 0)),
+			model: Tilesets.Roads.fifth,
 			rules: {
 				Left: "2",
 				Right: "0",
@@ -83,7 +88,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(0, 0, 0)),
+			model: Tilesets.Roads.sixth,
 			rules: {
 				Left: "2",
 				Right: "0",
@@ -95,7 +100,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(0, 0, 0)),
+			model: Tilesets.Roads.seventh,
 			rules: {
 				Left: "0",
 				Right: "2",
@@ -107,7 +112,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(0, 0, 0)),
+			model: Tilesets.Roads.eight,
 			rules: {
 				Left: "0",
 				Right: "2",
@@ -119,7 +124,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(0, 0, 0)),
+			model: Tilesets.Roads.ninth,
 			rules: {
 				Left: "2",
 				Right: "2",
@@ -131,7 +136,7 @@ export = () => {
 		},
 		{
 			probability: 1,
-			model: createFakeTileModel(new Color3(0, 0, 0)),
+			model: Tilesets.Roads.tenth,
 			rules: {
 				Left: "2",
 				Right: "2",
@@ -145,7 +150,7 @@ export = () => {
 	const adjacency = new FaceConnectionModel(tiles);
 	const gen = new Generator(
 		{
-			gridSize: new Vector3(3, 3, 3),
+			gridSize: new Vector3(8, 1, 8),
 			slotSize: new Vector3(5, 5, 5),
 		},
 		adjacency,
@@ -156,10 +161,6 @@ export = () => {
 
 		for (const [dir, enablers] of Object.entries(tileEnablers)) {
 			expect(dir).to.be.a("string");
-
-			for (const [neighborIndex, enablerCount] of Object.entries(enablers)) {
-				expect(enablerCount).to.be.equal(tiles.size());
-			}
 		}
 	});
 };

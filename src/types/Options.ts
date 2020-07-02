@@ -4,7 +4,8 @@ export interface GridOptions {
 }
 
 export interface GeneratorOptions {
-	updateRate: number;
+	updateRate?: number;
+	debug?: boolean;
 }
 
 export interface Tile<Rules> {

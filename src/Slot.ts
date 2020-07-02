@@ -149,7 +149,7 @@ export default class Slot<T> {
 			const neighbor = this.generator.slots[neighborIndex];
 
 			const dirIndex = DirectionIndexFromName[dir];
-			const inverseDirName = getInverseDir(dirIndex);
+			const inverseDirName = getInverseDir(dirIndex - 1);
 
 			for (const tile of tilesToRemove) {
 				const possibleNeighbors = this.generator.adjacencyModel.getPossibleNeighbors(tile.index)[dir];
@@ -179,7 +179,7 @@ export default class Slot<T> {
 			error("CONTRADICTION");
 		}
 
-		if (finish) {
+		if (finish !== undefined) {
 			finish();
 		}
 	}

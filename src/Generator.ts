@@ -5,7 +5,7 @@ import { DirectionNames, directionVectors, getInverseDir, DirectionNameUnion } f
 import * as Options from "./types/options";
 import { InternalTile, TileEnablers, possibleNeighborsType, Neighbors } from "./types/Internal";
 
-const DEFAULT_UPDATE_RATE = 1;
+const DEFAULT_UPDATE_RATE = -1;
 
 const STARTING_TILE_ENABLERS: TileEnablers = {
 	Left: [],
@@ -61,7 +61,14 @@ export class Generator<T> {
 
 					//this.slots.size() might work weird?
 					this.slots.push(
-						new Slot(slotPos, this.slots.size(), this, adjacencyModel.tiles, initialTileEnablers, random),
+						new Slot(
+							slotPos,
+							this.slots.size(),
+							this,
+							adjacencyModel.tiles.copy(),
+							Object.deepCopy(initialTileEnablers),
+							random,
+						),
 					);
 				}
 			}
@@ -70,7 +77,7 @@ export class Generator<T> {
 		this.uncollapsedSlots = this.slots.copy();
 
 		//Update loop
-		this.updateRate = options !== undefined ? options.updateRate : DEFAULT_UPDATE_RATE;
+		this.updateRate = options !== undefined && options.updateRate ? options.updateRate : DEFAULT_UPDATE_RATE;
 
 		let totalStep = 0;
 		this.heartbeatConnection = RunService.Heartbeat.Connect((step) => {
