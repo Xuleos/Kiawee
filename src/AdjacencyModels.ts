@@ -22,12 +22,14 @@ export abstract class AdjacencyModel<T> {
 		this.tiles = [];
 		this.cachedPossibleNeighbors = [];
 		for (const tile of tileSet) {
+			const copiedTile = Object.deepCopy(tile);
+
 			this.tiles.push({
-				probability: tile.probability,
-				model: tile.model,
-				rules: tile.rules,
+				probability: copiedTile.probability,
+				model: copiedTile.model,
+				rules: copiedTile.rules,
 				index: this.tiles.size(),
-				pLogP: tile.probability * math.log(tile.probability),
+				pLogP: copiedTile.probability * math.log(copiedTile.probability),
 			});
 		}
 	}
@@ -49,6 +51,10 @@ export class FaceConnectionModel extends AdjacencyModel<FaceConnectionRules> {
 			return this.cachedPossibleNeighbors[tileIndex];
 		} else {
 			const thisTile = this.tiles[tileIndex];
+
+			if (thisTile === undefined) {
+				warn("index tileIndex cannot be found in this.tiles");
+			}
 
 			const possibleNeighbors: possibleNeighborsType = Object.deepCopy(STARTING_POSSIBLE_NEIGHBORS);
 

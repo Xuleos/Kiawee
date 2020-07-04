@@ -51,6 +51,7 @@ export default class Slot<T> {
 			part.Position = pos;
 			part.Anchored = true;
 			part.CanCollide = false;
+			part.Name = tostring(index);
 			part.Transparency = 0.8;
 			part.Parent = Workspace;
 
@@ -60,6 +61,7 @@ export default class Slot<T> {
 
 			const textLabel = new Instance("TextLabel");
 			textLabel.TextScaled = true;
+			textLabel.BackgroundTransparency = 0.8;
 			textLabel.Size = new UDim2(1, 0, 1, 0);
 			textLabel.Text = tostring(tiles.size());
 			textLabel.Parent = surfaceGui;
@@ -187,13 +189,16 @@ export default class Slot<T> {
 
 			for (const tile of tilesToRemove) {
 				const possibleNeighbors = this.generator.adjacencyModel.getPossibleNeighbors(tile.index)[dir];
+
 				for (const possibleNeighbor of possibleNeighbors) {
 					const containsPossibleNeighbor = neighbor.containsTile(possibleNeighbor);
-
 					if (neighbor.tileEnablers[inverseDirName][possibleNeighbor] === 1 && containsPossibleNeighbor) {
-						//TODO: Removaleoe
+						//print("//");
+						//print(`${tile.model.Name} ${dir}`);
+						//print(this.generator.adjacencyModel.tiles[possibleNeighbor - 1].model.Name);
+
 						removalArray.push({
-							tile: this.generator.adjacencyModel.tiles[possibleNeighbor],
+							tile: this.generator.adjacencyModel.tiles[possibleNeighbor - 1],
 							slot: neighbor,
 						});
 					}

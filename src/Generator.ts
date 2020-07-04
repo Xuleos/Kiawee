@@ -103,9 +103,20 @@ export class Generator<T> {
 	public getNeighbors(pos: Vector3): Neighbors {
 		const neighbors: Neighbors = {};
 
+		if (this.debug) {
+			const thisSlot = this.slots.find((slot) => {
+				return slot.position === pos;
+			});
+
+			if (thisSlot && thisSlot.debugParts) {
+				thisSlot.debugParts.part.Color = new Color3(0, 1, 0);
+			}
+		}
+
 		for (let i = 0; i < 6; i++) {
 			const dirName = DirectionNames[i];
 			const dirVector = directionVectors[i];
+
 			const neighborPos = pos.add(dirVector.mul(this.gridOptions.slotSize));
 
 			const neighbor = this.slots.find((slot) => {
